@@ -10,6 +10,8 @@ use std::fs::File;
 
 
 
+
+
 fn main() -> io::Result<()> {
     let  f = File::open("/dev/nvme1n1");
     // let mut f = File::open("/dev/sda")?;
