@@ -6,14 +6,14 @@ use std::collections::HashMap;
 use std::io;
 use std::io::prelude::*;
 use std::fs::File;
-
+use std::fmt;
 
 
 
 
 
 fn main() -> io::Result<()> {
-    let  f = File::open("/dev/nvme1n1");
+    let  f = File::open("/home/bendyz/nvme0n1");
     // let mut f = File::open("/dev/sda")?;
 
     let mut f = match f{
@@ -57,6 +57,8 @@ fn main() -> io::Result<()> {
         partycja(&slice[n*16..(n+1)*16]);
         let mbpart1 = MBRpart::new(&slice[n*16..(n+1)*16]);
         println!("info o partycji ze struct: {:?}", mbpart1.to_tuple());
+        //println!("info o partycji ze struct: {}", mbpart1);
+        println!("{}",mbpart1.to_string());
     }
 
     // println!("\nPartycja 1: ");
@@ -114,6 +116,32 @@ impl MBRpart {
     
 
 }
+
+impl fmt::Display for MBRpart {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Customize so only `x` and `y` are denoted.
+        let res = format!("Typ Partycji: {typ}\nPierwszy sektor: {fs}\nLiczba sektorów: {ls}\nWielkosc partycji: {size}\n"
+        ,typ=self.partition_type_string
+        ,ls= self.sector_count
+        ,fs= self.first_sector
+        ,size = self.size);
+
+        write!(f, "{}", res)
+    }
+}
+
+// impl fmt::string::ToString for MBRpart{
+//     fn to_string(&self) -> String{
+//        let res = format!("Typ Partycji: {typ}\n Pierwszy sektor: {fs}\nLiczba sektorów: {ls}\n Wielkosc partycji: {size}\n"
+//         ,typ=self.partition_type_string
+//         ,ls= self.sector_count
+//         ,fs= self.first_sector
+//         ,size = self.size);
+
+        
+//     }
+// }
+
 
 
 fn get_partition_type_string(ptype: u8) -> String{
